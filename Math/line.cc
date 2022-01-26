@@ -22,7 +22,13 @@ Line & Line::operator=(const Line & line) {
 // Note: Check than A and B are not too close!
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
-	/* =================== PUT YOUR CODE HERE ====================== */
+	/* =================== PUT YOUR CODE HERE ====================== */ 
+	v_aux=B-A;
+	v_aux.isZero();
+	v.aux length>0;
+	m_0=A;
+	m_d =v_aux.normalize();
+	//Vector3 v_aux= B-A;
 
 	/* =================== END YOUR CODE HERE ====================== */
 }
