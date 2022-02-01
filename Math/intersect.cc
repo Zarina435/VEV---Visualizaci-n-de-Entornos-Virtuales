@@ -17,6 +17,13 @@
 
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	float dist= pl.distance(bs->m_centre;);
+	if (dist>bs.m_radius){
+		return IREJECT;
+	}
+	else{
+		return IINTERSECT;
+	}
 
 	/* =================== END YOUR CODE HERE ====================== */
 }
@@ -29,6 +36,8 @@ int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	if (bba.m_max>bbb.m_max){
+	}
 
 	/* =================== END YOUR CODE HERE ====================== */
 }
