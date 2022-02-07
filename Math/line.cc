@@ -24,12 +24,12 @@ Line & Line::operator=(const Line & line) {
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 	/* =================== PUT YOUR CODE HERE ====================== */ 
 	v_aux=B-A;
-	v_aux.isZero();
-	v.aux length>0;
-	m_0=A;
-	m_d =v_aux.normalize();
-	//Vector3 v_aux= B-A;
-
+	if(v_aux.isZero()){
+		if (v.aux length>0){
+			m_O=A;
+			m_d =v_aux.normalize();
+		}
+	}
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -38,7 +38,7 @@ void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 Vector3 Line::at(float u) const {
 	Vector3 res;
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	res= m_O+u*m_d;
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
 }
@@ -50,19 +50,21 @@ Vector3 Line::at(float u) const {
 float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	res= m_d*(P-m_0)/(m_d*m_d);
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
 }
 
 // @@ TODO: Calculate the minimum distance 'dist' from line to P
 //
-// dist = ||P - (m_o + u0*m_d)||
+// dist = ||P - (m_o + u0*m_d)||a
 // Where u0 = paramDistance(P)
 
 float Line::distance(const Vector3 & P) const {
 	float res = 0.0f;
 	/* =================== PUT YOUR CODE HERE ====================== */
+	u0= paramDistance(P);
+	res= fabs(P - (m_o + u0*m_d));
 
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
