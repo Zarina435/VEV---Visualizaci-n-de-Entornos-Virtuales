@@ -17,8 +17,8 @@
 
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 	/* =================== PUT YOUR CODE HERE ====================== */
-	float dist= pl.distance(bs->m_centre;);
-	if (dist>bs.m_radius){
+	float dist= pl->distance(bs->m_centre);
+	if (dist>bs->m_radius){
 		return IREJECT;
 	}
 	else{
@@ -36,11 +36,11 @@ int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 	/* =================== PUT YOUR CODE HERE ====================== */
-	if (bba.m_max.x>=bbb.m_min.x){
-		if(bba.m_min.y<bbb.m_max.y and bbb.m_max.y<bba.m_max.y){
+	if (bba->m_max.x()>=bbb->m_min.x()){
+		if(bba->m_min.y()<bbb->m_max.y() and bbb->m_max.y()<bba->m_max.y()){
 			return IINTERSECT;
 		}
-		else if(bba.m_min.y< bbb.m_min.y and bbb.m_min.y<bba.m_max.y){
+		else if(bba->m_min.y()< bbb->m_min.y() and bbb->m_min.y()<bba->m_max.y()){
 			return IINTERSECT;
 		}
 		else{
@@ -48,10 +48,10 @@ int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 		}
 	}
 	else{
-		if(bbb.m_min.y<bba.m_max.y and bba.m_max.y<bbb.m_max.y){
+		if(bbb->m_min.y()<bba->m_max.y() and bba->m_max.y()<bbb->m_max.y()){
 			return IINTERSECT;
 		}
-		else if(bbb.m_min.y< bba.m_min.y and bba.m_min.y<bbb.m_max.y){
+		else if(bbb->m_min.y()< bba->m_min.y() and bba->m_min.y()<bbb->m_max.y()){
 			return IINTERSECT;
 		}
 		else{
@@ -72,30 +72,44 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 	Vector3 cercano;
 	Vector3 lejano;
 	//sacar puntos cercano y lejano segun la normal
-	if(thePlane.m_n.x>0){
-		cercano.x= theBBox.m_min.x;
-		lejano.x=theBBox.m_max.x;
+	if(thePlane->m_n.x()>0){
+		cercano.x()= theBBox->m_min.x();
+		lejano.x()=theBBox->m_max.x();
 	}else{
-		cercano.x= theBBox.m_max.x;
-		lejano.x=theBBox.m_min.x;
+		cercano.x()= theBBox->m_max.x();
+		lejano.x()=theBBox->m_min.x();
 	}
 
-	if(thePlane.m_n.y>0){
-		cercano.y= theBBox.m_min.y;
-		lejano.y=theBBox.m_max.y;
+	if(thePlane->m_n.y()>0){
+		cercano.y()= theBBox->m_min.y();
+		lejano.y()=theBBox->m_max.y();
 	}else{
-		cercano.y= theBBox.m_max.y;
-		lejano.y=theBBox.m_min.y;
+		cercano.y()= theBBox->m_max.y();
+		lejano.y()=theBBox->m_min.y();
 	}
 
-	if(thePlane.m_n.z>0){
-		cercano.z= theBBox.m_min.z;
-		lejano.z=theBBox.m_max.z;
+	if(thePlane->m_n.z()>0){
+		cercano.z()= theBBox->m_min.z();
+		lejano.z()=theBBox->m_max.z();
 	}else{
-		cercano.z= theBBox.m_max.z;
-		lejano.z=theBBox.m_min.z;
+		cercano.z()= theBBox->m_max.z();
+		lejano.z()=theBBox->m_min.z();
 	}
 
+	int aux1= thePlane->whichSide(cercano);
+	int aux2= thePlane->whichSide(lejano);
+
+	if(aux1==aux2){
+		if (aux1>0){
+			return +IREJECT;
+		}
+		else{
+			return -IREJECT;
+		}
+	}
+	else{
+		return IINTERSECT;
+	}
 	
 	/* =================== END YOUR CODE HERE ====================== */
 }

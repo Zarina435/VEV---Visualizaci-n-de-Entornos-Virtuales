@@ -23,17 +23,11 @@ Line & Line::operator=(const Line & line) {
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 	/* =================== PUT YOUR CODE HERE ====================== */ 
-<<<<<<< HEAD
-	v_aux=B-A;
-	if(v_aux.isZero()){
-		if (v.aux length>0){
-			m_O=A;
-=======
+
 	Vector3 v_aux=B-A;
 	if (v_aux.isZero()){
-		if (v.aux length>0){
-			m_0=A;
->>>>>>> 3748a9168485e2f95e8c8749ba4609aa717bbf49
+		if (v_aux.length()>0){
+			m_O=A;
 			m_d =v_aux.normalize();
 		}
 	}
@@ -45,11 +39,7 @@ void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 Vector3 Line::at(float u) const {
 	Vector3 res;
 	/* =================== PUT YOUR CODE HERE ====================== */
-<<<<<<< HEAD
 	res= m_O+u*m_d;
-=======
-	res= m_O+u*m_d:
->>>>>>> 3748a9168485e2f95e8c8749ba4609aa717bbf49
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
 }
@@ -61,42 +51,34 @@ Vector3 Line::at(float u) const {
 float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
 	/* =================== PUT YOUR CODE HERE ====================== */
-<<<<<<< HEAD
-	res= m_d*(P-m_0)/(m_d*m_d);
-=======
-	if((m_d.dot(m_d)>0.0){
-		res= (m_d-dot((P-m_O)))/ (m_d.dot(m_d));
+	
+	if( m_d.dot(m_d)>0.0){
+		res= (m_d.dot((P-m_O)))/ (m_d.dot(m_d));
 	}
 	else{
 		printf("Error");
 	}
 	
->>>>>>> 3748a9168485e2f95e8c8749ba4609aa717bbf49
+
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
 }
 
 // @@ TODO: Calculate the minimum distance 'dist' from line to P
 //
-// dist = ||P - (m_o + u0*m_d)||a
+// dist = ||P - (m_o + u0*m_d)||
 // Where u0 = paramDistance(P)
 
 float Line::distance(const Vector3 & P) const {
 	float res = 0.0f;
 	/* =================== PUT YOUR CODE HERE ====================== */
-<<<<<<< HEAD
-	u0= paramDistance(P);
-	res= fabs(P - (m_o + u0*m_d));
-
-=======
 	if(paramDistance(P)>0){
-		res =P - (m_o + paramDistance(P)*m_d);
-		res=res.normalize;
+		Vector3 aux=P - (m_O + paramDistance(P)*m_d);
+		res=aux.dot(aux);
 	}
 	else{
 		printf("Error");
 	}
->>>>>>> 3748a9168485e2f95e8c8749ba4609aa717bbf49
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
 }
