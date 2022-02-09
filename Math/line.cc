@@ -25,12 +25,14 @@ void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 	/* =================== PUT YOUR CODE HERE ====================== */ 
 
 	Vector3 v_aux=B-A;
-	if (v_aux.isZero()){
 		if (v_aux.length()>0){
 			m_O=A;
 			m_d =v_aux.normalize();
 		}
-	}
+		else{
+			printf("Los puntos están cercan");
+		}
+	
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -51,9 +53,9 @@ Vector3 Line::at(float u) const {
 float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
 	/* =================== PUT YOUR CODE HERE ====================== */
-	
-	if( m_d.dot(m_d)>0.0){
-		res= (m_d.dot((P-m_O)))/ (m_d.dot(m_d));
+	float denominador=  m_d.dot(m_d);
+	if(denominador>0.0){
+		res= (m_d.dot(P-m_O))/ denominador;
 	}
 	else{
 		printf("Error");
@@ -72,9 +74,10 @@ float Line::paramDistance(const Vector3 & P) const {
 float Line::distance(const Vector3 & P) const {
 	float res = 0.0f;
 	/* =================== PUT YOUR CODE HERE ====================== */
-	if(paramDistance(P)>0){
-		Vector3 aux=P - (m_O + paramDistance(P)*m_d);
-		res=aux.dot(aux);
+	float u0=paramDistance(P);
+	if(u0>0.0){
+		Vector3 aux=P - (m_O + u0*m_d);
+		res=aux.dot(aux); //se puede hacer aux.lenght() que es el módulo del vector aux
 	}
 	else{
 		printf("Error");
