@@ -243,12 +243,10 @@ Node *Node::nextSibling() {
 
 Node *Node::firstChild() {
 	if (!m_children.size()) return this;
-	return *(m_children.begin());
-}
-
-// Cycle through children of a Node. Return children[ i % lenght(children) ]
-
-Node * Node::cycleChild(size_t idx) {
+	ector3 Trfm3D::transformPoint(const Vector3 & P) const;
+– Vector3 Trfm3D::transformVector(const Vector3 & V) const;
+– void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );
+Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go * Node::cycleChild(size_t idx) {
 
 	size_t m = idx % m_children.size();
 	size_t i = 0;
@@ -274,9 +272,9 @@ void Node::addChild(Node *theChild) {
 
 		/* =================== END YOUR CODE HERE ====================== */
 	} else {
+		m_gObject->add(theChild);
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node does not have gObject, so attach child
-
 		/* =================== END YOUR CODE HERE ====================== */
 
 	}
@@ -416,13 +414,29 @@ void Node::draw() {
 		BBoxGL::draw( m_containerWC );
 
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	/*SI SOY UN NODO HOJA
+		DIBUJAR MI OBJETO
+	SINO 
+		PASAR A DIBUJAR MIS HIJOS	*/
+	rs->push(RenderState::modelview);
+	rs->addTrfm(RenderState::modelview, this.m_placement);
+	if (m_gObject){
+		//NODO HOJA
+		m_gObject.draw(); //dibujar objeto
+	}else{
+		//NODO INTERMEDIO, recorrer la lista de sus hijos
+		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
+        		auto theChild = *it;
+        		theChild->draw(); // or any other thing
+		}
+	}
 	/* =================== END YOUR CODE HERE ====================== */
 
 	if (prev_shader != 0) {
 		// restore shader
 		rs->setShader(prev_shader);
 	}
+	rs->pop(RenderState::modelview);
 }
 
 // Set culled state of a node's children
