@@ -17,7 +17,14 @@ using std::map;
 //        auto theChild = *it;
 //        theChild->print(); // or any other thing
 //    }
-
+/*  push(modelview)
+	cargar transformacion en la modelview
+	si es hoja-> dibujo
+	sino-> llamar recursivamente a los hijos*/
+/*	si hoja-> push
+			  cargar transformacion global
+			  dibujo
+			  pop*/
 Node::Node(const string &name) :
 	m_name(name),
 	m_parent(0),
@@ -243,7 +250,7 @@ Node *Node::nextSibling() {
 
 Node *Node::firstChild() {
 	if (!m_children.size()) return this;
-	ector3 Trfm3D::transformPoint(const Vector3 & P) const;
+	Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
 – Vector3 Trfm3D::transformVector(const Vector3 & V) const;
 – void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );
 Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go * Node::cycleChild(size_t idx) {
@@ -275,6 +282,9 @@ void Node::addChild(Node *theChild) {
 		m_gObject->add(theChild);
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node does not have gObject, so attach child
+		theChild->m_parent=this;
+		m_children->push_back(theChild);
+		m_gObject->add(theChild);
 		/* =================== END YOUR CODE HERE ====================== */
 
 	}
@@ -356,10 +366,24 @@ void Node::updateBB () {
 //
 //    See Recipe 1 at the beggining of the file in for knowing how to
 //    iterate through children.
-
+/*	Soy el nodo root? Tengo padre?? (si mi padre es 0, es que soy el root)
+	m_placementWC=m_placement
+	si-> llamar recurvamente a upadateWC con tus hijossi los tienes
+	no-> m_placementWC= COMPOSICION(m_placementWC_de_mi_padre, m_placement)*/
 void Node::updateWC() {
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	if (m_parent==0){
+		m_placementWC.clone(m_placement);
+	}
+	else{
+		m_placementWC.clone(m_parent.m_placementWC.add(m_placement));
+		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
+        	auto theChild = *it;
+        	theChild->print(); // or any other thing
+		}
+	}
+	
+	}
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -373,7 +397,7 @@ void Node::updateWC() {
 
 void Node::updateGS() {
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	updateWC();
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -418,15 +442,17 @@ void Node::draw() {
 		DIBUJAR MI OBJETO
 	SINO 
 		PASAR A DIBUJAR MIS HIJOS	*/
-	rs->push(RenderState::modelview);
-	rs->addTrfm(RenderState::modelview, this.m_placement);
+	
 	if (m_gObject){
 		//NODO HOJA
-		m_gObject.draw(); //dibujar objeto
+		rs->push(RenderState::modelview);
+		rs->addTrfm(RenderState::modelview, this->m_placement);
+		m_gObject->draw(); //dibujar objeto
+		rs->pop(RenderState::modelview);
 	}else{
 		//NODO INTERMEDIO, recorrer la lista de sus hijos
-		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
-        		auto theChild = *it;
+		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();it != end; ++it) {
+        		Node *theChild = *it;
         		theChild->draw(); // or any other thing
 		}
 	}

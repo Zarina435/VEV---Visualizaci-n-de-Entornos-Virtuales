@@ -60,8 +60,6 @@ float Line::paramDistance(const Vector3 & P) const {
 	else{
 		printf("Error");
 	}
-	
-
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
 }
