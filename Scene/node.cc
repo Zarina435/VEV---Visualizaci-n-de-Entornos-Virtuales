@@ -379,7 +379,7 @@ void Node::updateWC() {
 	}
 	else{
 		m_placementWC->clone(m_parent->m_placementWC);
-		//fdgrgrg->add(m_placementWC)
+		m_placementWC->add(m_placement);
 		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
         	auto theChild = *it;
         	
