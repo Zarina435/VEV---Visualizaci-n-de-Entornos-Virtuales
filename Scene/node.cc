@@ -250,10 +250,13 @@ Node *Node::nextSibling() {
 
 Node *Node::firstChild() {
 	if (!m_children.size()) return this;
-	Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
-– Vector3 Trfm3D::transformVector(const Vector3 & V) const;
-– void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );
-Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go * Node::cycleChild(size_t idx) {
+	return *(m_children.begin());
+}
+	/*Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
+ Vector3 Trfm3D::transformVector(const Vector3 & V) const;
+ void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );*/
+//Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go 
+Node * Node::cycleChild(size_t idx) {
 
 	size_t m = idx % m_children.size();
 	size_t i = 0;
@@ -276,15 +279,13 @@ void Node::addChild(Node *theChild) {
 	if (m_gObject) {
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node has a gObject, so print warning
-
+         printf("njerfhewrgbe");
 		/* =================== END YOUR CODE HERE ====================== */
 	} else {
-		m_gObject->add(theChild);
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node does not have gObject, so attach child
 		theChild->m_parent=this;
-		m_children->push_back(theChild);
-		m_gObject->add(theChild);
+		m_children.push_back(theChild);
 		/* =================== END YOUR CODE HERE ====================== */
 
 	}
@@ -373,17 +374,18 @@ void Node::updateBB () {
 void Node::updateWC() {
 	/* =================== PUT YOUR CODE HERE ====================== */
 	if (m_parent==0){
-		m_placementWC.clone(m_placement);
+		m_placementWC->clone(m_placement);
 	}
 	else{
-		m_placementWC.clone(m_parent.m_placementWC.add(m_placement));
+		m_parent->m_placementWC->add(this->m_placement);
+		m_placementWC->clone(m_parent->m_placementWC);
 		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
         	auto theChild = *it;
-        	theChild->print(); // or any other thing
+        	theChild->updateWC(); // or any other thing
 		}
 	}
 	
-	}
+	
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -462,7 +464,7 @@ void Node::draw() {
 		// restore shader
 		rs->setShader(prev_shader);
 	}
-	rs->pop(RenderState::modelview);
+	//rs->pop(RenderState::modelview);
 }
 
 // Set culled state of a node's children

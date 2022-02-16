@@ -75,7 +75,8 @@ float Line::distance(const Vector3 & P) const {
 	float u0=paramDistance(P);
 	if(u0>0.0){
 		Vector3 aux=P - (m_O + u0*m_d);
-		res=aux.dot(aux); //se puede hacer aux.lenght() que es el módulo del vector aux
+		//res=aux.dot(aux); //se puede hacer aux.lenght() que es el módulo del vector aux
+		res=aux.length();
 	}
 	else{
 		printf("Error");
