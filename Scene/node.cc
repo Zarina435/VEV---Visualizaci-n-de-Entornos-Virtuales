@@ -286,6 +286,7 @@ void Node::addChild(Node *theChild) {
 		// node does not have gObject, so attach child
 		theChild->m_parent=this;
 		m_children.push_back(theChild);
+		updateGS();
 		/* =================== END YOUR CODE HERE ====================== */
 
 	}
@@ -377,12 +378,13 @@ void Node::updateWC() {
 		m_placementWC->clone(m_placement);
 	}
 	else{
-		m_parent->m_placementWC->add(this->m_placement);
 		m_placementWC->clone(m_parent->m_placementWC);
+		//fdgrgrg->add(m_placementWC)
 		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
         	auto theChild = *it;
-        	theChild->updateWC(); // or any other thing
+        	
 		}
+	theChild->updateWC(); // or any other thing
 	}
 	
 	
@@ -399,7 +401,7 @@ void Node::updateWC() {
 
 void Node::updateGS() {
 	/* =================== PUT YOUR CODE HERE ====================== */
-	//updateWC();
+	updateWC();
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -444,22 +446,20 @@ void Node::draw() {
 		DIBUJAR MI OBJETO
 	SINO 
 		PASAR A DIBUJAR MIS HIJOS	*/
-	rs->push(RenderState::modelview);
-	rs->addTrfm(RenderState::modelview, this->m_placement);
+	
 	if (m_gObject){
 		//NODO HOJA
+		rs->push(RenderState::modelview);
+	    rs->addTrfm(RenderState::modelview, this->m_placement);
 		m_gObject->draw(); //dibujar objeto
 		//rs->pop(RenderState::modelview);
 	}else{
 		//NODO INTERMEDIO, recorrer la lista de sus hijos
-		/*for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();it != end; ++it) {
+		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();it != end; ++it) {
         		Node *theChild = *it;
         		theChild->draw(); // or any other thing
-		}*/
-				for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
-        		auto theChild = *it;
-        		theChild->draw(); // or any other thing
 		}
+		
 	}
 	/* =================== END YOUR CODE HERE ====================== */
 
@@ -467,7 +467,7 @@ void Node::draw() {
 		// restore shader
 		rs->setShader(prev_shader);
 	}
-	rs->pop(RenderState::modelview);
+	//rs->pop(RenderState::modelview);
 }
 
 // Set culled state of a node's children
