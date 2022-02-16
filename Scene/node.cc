@@ -399,7 +399,7 @@ void Node::updateWC() {
 
 void Node::updateGS() {
 	/* =================== PUT YOUR CODE HERE ====================== */
-	updateWC();
+	//updateWC();
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -444,17 +444,20 @@ void Node::draw() {
 		DIBUJAR MI OBJETO
 	SINO 
 		PASAR A DIBUJAR MIS HIJOS	*/
-	
+	rs->push(RenderState::modelview);
+	rs->addTrfm(RenderState::modelview, this->m_placement);
 	if (m_gObject){
 		//NODO HOJA
-		rs->push(RenderState::modelview);
-		rs->addTrfm(RenderState::modelview, this->m_placement);
 		m_gObject->draw(); //dibujar objeto
-		rs->pop(RenderState::modelview);
+		//rs->pop(RenderState::modelview);
 	}else{
 		//NODO INTERMEDIO, recorrer la lista de sus hijos
-		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();it != end; ++it) {
+		/*for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();it != end; ++it) {
         		Node *theChild = *it;
+        		theChild->draw(); // or any other thing
+		}*/
+				for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
+        		auto theChild = *it;
         		theChild->draw(); // or any other thing
 		}
 	}
@@ -464,7 +467,7 @@ void Node::draw() {
 		// restore shader
 		rs->setShader(prev_shader);
 	}
-	//rs->pop(RenderState::modelview);
+	rs->pop(RenderState::modelview);
 }
 
 // Set culled state of a node's children
