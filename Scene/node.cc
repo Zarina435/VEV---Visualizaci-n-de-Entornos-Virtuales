@@ -380,11 +380,12 @@ void Node::updateWC() {
 	else{
 		m_placementWC->clone(m_parent->m_placementWC);
 		m_placementWC->add(m_placement);
-		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
-        	auto theChild = *it;
-        	updateWC(); // or any other thing
-		}
+		
 	}
+	for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
+        	auto theChild = *it;
+        	theChild->updateWC(); // or any other thing
+		}
 	
 	
 	/* =================== END YOUR CODE HERE ====================== */
@@ -451,7 +452,7 @@ void Node::draw() {
 		rs->push(RenderState::modelview);
 	    rs->addTrfm(RenderState::modelview, this->m_placementWC);
 		m_gObject->draw(); //dibujar objeto
-		//rs->pop(RenderState::modelview);
+		rs->pop(RenderState::modelview);
 	}else{
 		//NODO INTERMEDIO, recorrer la lista de sus hijos
 		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();it != end; ++it) {
