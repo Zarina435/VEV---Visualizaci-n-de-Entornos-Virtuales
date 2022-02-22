@@ -279,7 +279,7 @@ void Node::addChild(Node *theChild) {
 	if (m_gObject) {
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node has a gObject, so print warning
-         printf("njerfhewrgbe");
+         printf("ERROR");
 		/* =================== END YOUR CODE HERE ====================== */
 	} else {
 		/* =================== PUT YOUR CODE HERE ====================== */
@@ -382,9 +382,8 @@ void Node::updateWC() {
 		m_placementWC->add(m_placement);
 		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
         	auto theChild = *it;
-        	
+        	updateWC(); // or any other thing
 		}
-	theChild->updateWC(); // or any other thing
 	}
 	
 	
@@ -450,7 +449,7 @@ void Node::draw() {
 	if (m_gObject){
 		//NODO HOJA
 		rs->push(RenderState::modelview);
-	    rs->addTrfm(RenderState::modelview, this->m_placement);
+	    rs->addTrfm(RenderState::modelview, this->m_placementWC);
 		m_gObject->draw(); //dibujar objeto
 		//rs->pop(RenderState::modelview);
 	}else{
@@ -507,7 +506,6 @@ const Node *Node::checkCollision(const BSphere *bsph) const {
 
 	/* =================== END YOUR CODE HERE ====================== */
 }
-
 void Node::print_trfm(int sep) const {
 	std::string delim(sep,' ');
 	printf("%sNode:%s\n", delim.c_str(), m_name.c_str());
