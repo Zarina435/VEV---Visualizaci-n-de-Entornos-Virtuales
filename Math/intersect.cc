@@ -36,28 +36,14 @@ int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 	/* =================== PUT YOUR CODE HERE ====================== */
-	if (bba->m_max.x()>=bbb->m_min.x()){
-		if(bba->m_min.y()<bbb->m_max.y() and bbb->m_max.y()<bba->m_max.y()){
-			return IINTERSECT;
-		}
-		else if(bba->m_min.y()< bbb->m_min.y() and bbb->m_min.y()<bba->m_max.y()){
-			return IINTERSECT;
-		}
-		else{
-			return IREJECT;
+	if((bba->m_max.x()>=bbb->m_min.x())&(bbb->m_max.x()>=bba->m_min.x())){
+		if((bba->m_max.y()>=bbb->m_min.y())&(bbb->m_max.y()>=bba->m_min.y())){
+			if((bba->m_max.z()>=bbb->m_min.z())&(bbb->m_max.z()>=bba->m_min.z())){
+				return IINTERSECT;
+			}
 		}
 	}
-	else{
-		if(bbb->m_min.y()<bba->m_max.y() and bba->m_max.y()<bbb->m_max.y()){
-			return IINTERSECT;
-		}
-		else if(bbb->m_min.y()< bba->m_min.y() and bba->m_min.y()<bbb->m_max.y()){
-			return IINTERSECT;
-		}
-		else{
-			return IREJECT;
-		}
-	}
+	return IREJECT;
 	/* =================== END YOUR CODE HERE ====================== */
 }
 

@@ -315,6 +315,11 @@ void Node::detach() {
 
 void Node::propagateBBRoot() {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	updateBB();
+	//m_parent->updateBB();
+	if(m_parent){
+		m_parent->propagateBBRoot();
+	}
 
 	/* =================== END YOUR CODE HERE ====================== */
 }
@@ -348,7 +353,20 @@ void Node::propagateBBRoot() {
 
 void Node::updateBB () {
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	
+	if(m_gObject){
+		m_containerWC->clone(m_gObject->getContainer());
+		m_containerWC->transform(m_placementWC);
+	}
+	else{
+		m_containerWC->init();
+		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
+        auto theChild = *it;
+		m_containerWC->include(theChild->m_containerWC);
+    }
+		
+	}
+	
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -386,7 +404,7 @@ void Node::updateWC() {
         	auto theChild = *it;
         	theChild->updateWC(); // or any other thing
 		}
-	
+	updateBB();
 	
 	/* =================== END YOUR CODE HERE ====================== */
 }
@@ -402,6 +420,9 @@ void Node::updateWC() {
 void Node::updateGS() {
 	/* =================== PUT YOUR CODE HERE ====================== */
 	updateWC();
+	if(m_parent){
+		m_parent->propagateBBRoot();
+	}
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -517,3 +538,15 @@ void Node::print_trfm(int sep) const {
 		theChild->print_trfm(sep + 1);
 	}
 }
+/* empieza con el root, mira a ver si hay interseccion. 
+Si no es un nodo hoja, mira a ver que pasa con sus hijos, hay colision?
+cuando haya una colisión con un objeto salgo, no hay que checkear nada más.
+
+SI HAY COLISIÓN CON OBJETO-> SALGO //Caso básico de la recursión
+NO HAY COLISIÓN CON OBJETO-> MIRAR HIJOS (Recursivamente) //profundidad y anchura . 
+							SI no hay colision con ese, con sus hijos tampoco (recorrido en anchura mejor)
+							
+							
+con el nodo root miramos si colisiona la esfera  con el BBox, se llam recursivamente
+a la función que lo checkea. Mirar con que hijos colisiona. Hay que encontrar el nodo
+hoja con el que colisiona.*/
