@@ -142,15 +142,16 @@ void OrthographicCamera::updateProjection() {
 
 void PerspectiveCamera::updateProjection() {
 	/* =================== PUT YOUR CODE HERE ====================== */
-	float right,left,top,bottom;
+	float r,l,t,b;
 
-	//Asignar valores correspondientes
-	top = m_near*tan(m_fovy/2.0f);
-	bottom = -(m_near*tan(m_fovy/2.0f));
-	right = m_aspectRatio * top;
-	left = -(m_aspectRatio * top);
-
-	m_projTrfm->setFrustum(left,right,bottom,top,m_near,m_far);
+	//Asignar valores correspondientes dada la relacion: (r-l)/(t-b)=w/h 
+	// fovy es la apertura en la dirección y, m_near la distancia al plano cercano, y w/h la relacion de aspecto.
+	t = m_near*tan(m_fovy/2.0f);
+	b = -t;
+	r = m_aspectRatio * t;
+	l = -r;
+	//Actualizamos la matriz de proyección.
+	m_projTrfm->setFrustum(l,r,b,t,m_near,m_far);
 	/* =================== END YOUR CODE HERE ====================== */
 	updateFrustumPlanes();
 }

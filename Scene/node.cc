@@ -390,9 +390,10 @@ void Node::updateBB () {
 //
 //    See Recipe 1 at the beggining of the file in for knowing how to
 //    iterate through children.
+
 /*	Soy el nodo root? Tengo padre?? (si mi padre es 0, es que soy el root)
 	m_placementWC=m_placement
-	si-> llamar recurvamente a upadateWC con tus hijossi los tienes
+	si-> llamar recursivamente a upadateWC con tus hijos si los tienes
 	no-> m_placementWC= COMPOSICION(m_placementWC_de_mi_padre, m_placement)*/
 void Node::updateWC() {
 	/* =================== PUT YOUR CODE HERE ====================== */
@@ -423,6 +424,7 @@ void Node::updateWC() {
 
 void Node::updateGS() {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Actualizar, y si es padre propagar.
 	updateWC();
 	if(m_parent){
 		m_parent->propagateBBRoot();
