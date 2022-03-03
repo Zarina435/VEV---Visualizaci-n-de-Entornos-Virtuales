@@ -17,10 +17,13 @@
 
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Calcular distancia del centro de la esfera al plano.
 	float dist= pl->distance(bs->m_centre);
+	//Si la distancia es mayor que el radio, no intersectan.
 	if (dist>bs->m_radius){
 		return IREJECT;
 	}
+	//Si la distancia es menor, intersectan.
 	else{
 		return IINTERSECT;
 	}
@@ -36,8 +39,12 @@ int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Comprobar si se solapan en todos los ejes. Si lo hacen, es que intersectan.
+	//X
 	if((bba->m_max.x()>=bbb->m_min.x())&(bbb->m_max.x()>=bba->m_min.x())){
+		//Y
 		if((bba->m_max.y()>=bbb->m_min.y())&(bbb->m_max.y()>=bba->m_min.y())){
+			//Z
 			if((bba->m_max.z()>=bbb->m_min.z())&(bbb->m_max.z()>=bba->m_min.z())){
 				return IINTERSECT;
 			}
@@ -57,7 +64,7 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 	/* =================== PUT YOUR CODE HERE ====================== */
 	Vector3 cercano;
 	Vector3 lejano;
-	//sacar puntos cercano y lejano segun la normal
+	//Sacar puntos cercano y lejano segun la normal.
 	if(thePlane->m_n.x()>0){
 		cercano.x()= theBBox->m_min.x();
 		lejano.x()=theBBox->m_max.x();
@@ -81,11 +88,12 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 		cercano.z()= theBBox->m_max.z();
 		lejano.z()=theBBox->m_min.z();
 	}
-
+	//Calcular en qué parte del plano estan los puntos más cercano y más lejano.
 	int aux1= thePlane->whichSide(cercano);
 	int aux2= thePlane->whichSide(lejano);
-
+    //Si estan en el mismo lado, el BBox no intersecta con el plano.
 	if(aux1==aux2){
+		//Mirar en qué lado del plano están.
 		if (aux1>0){
 			return +IREJECT;
 		}
@@ -93,6 +101,7 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 			return -IREJECT;
 		}
 	}
+	//Si estan en lados diferentes, es que intersecta con el plano.
 	else{
 		return IINTERSECT;
 	}

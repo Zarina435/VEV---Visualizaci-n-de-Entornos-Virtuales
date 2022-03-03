@@ -284,6 +284,7 @@ void Node::addChild(Node *theChild) {
 	} else {
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node does not have gObject, so attach child
+		//No es un nodo hoja.
 		theChild->m_parent=this;
 		m_children.push_back(theChild);
 		updateGS();
@@ -315,8 +316,10 @@ void Node::detach() {
 
 void Node::propagateBBRoot() {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Actualizamos la BBox.
 	updateBB();
 	//m_parent->updateBB();
+	//Si tiene padre, propagamos hacia arriba. Si no tiene padre, significa que es la raíz y no hay que propagar.
 	if(m_parent){
 		m_parent->propagateBBRoot();
 	}
@@ -353,11 +356,12 @@ void Node::propagateBBRoot() {
 
 void Node::updateBB () {
 	/* =================== PUT YOUR CODE HERE ====================== */
-	
+	//Si es un nodo hoja.
 	if(m_gObject){
 		m_containerWC->clone(m_gObject->getContainer());
 		m_containerWC->transform(m_placementWC);
 	}
+	//Si no es un nodo hoja.
 	else{
 		m_containerWC->init();
 		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
