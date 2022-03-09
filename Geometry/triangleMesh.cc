@@ -100,6 +100,7 @@ int TriangleMesh::addNormal(const Vector3 & N) {
 }
 
 // Add a tex coord. NOTE: only first 2 coords of st are actually used
+//Forma de organizar, de tener por un lado las coordenadas y por otros las coordenas de textura.
 int TriangleMesh::addTexCoord(const Vector3 & st) {
 	int res = m_texCoords.size() / 2;
 	m_texCoords.push_back(st[0]);
