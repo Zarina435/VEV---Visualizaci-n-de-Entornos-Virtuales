@@ -99,8 +99,8 @@ void Light::placeScene() {
 			guardar modelview* posicion_de_la_luz
 			modificar la direccion del spot
 	*/
-	if (m_type==direccional){
-		m_positionEye= modelView->transformVector(m_position);
+	if (m_type==directional){
+		m_positionEye= modelView.transformVector(m_position);
 		m_positionEye= m_positionEye.normalize();
 	}
 		
