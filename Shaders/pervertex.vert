@@ -25,6 +25,7 @@ uniform struct material_t {
 	float shininess;
 } theMaterial;
 
+
 //Atributo: Geometría del vértice.
 attribute vec3 v_position; // Model space
 attribute vec3 v_normal;   // Model space
@@ -34,39 +35,54 @@ attribute vec2 v_texCoord; //Coordenadas de textura del vértice.
 varying vec4 f_color;
 varying vec2 f_texCoord;
 
-float Lambert_factor(vec3 n, vec3 l){
+float lambert_factor(vec3 n, vec3 l){
 	return max(dot(n,l),0.0);
 }
 
-void aporte_direccional(in int i, in vec3 l, in vec3 n, inout vec3 acumulador){
+void aporte_direccional(in int i, in vec3 l, in vec3 n, inout vec3 acumulador_difuso){
 	//Calcular Lambert
-	float NoL= Lambert_factor(n,l);
+	float NoL= lambert_factor(n,l);
 	if(NoL>0.0){
-		acumulador= acumulador+NoL+theMaterial.diffuse*theLights[i].diffuse;
+		acumulador_difuso= acumulador_difuso+NoL*theLights[i].diffuse;
 	}
 }
 	
+void aporte_posicional(in int i, in vec3 l, in vec3 n, inout vec3 acumulador_difuso){
+	if(length(l)>0.0){
+		float NoL= lambert_factor(n,l);
+		if (NoL>0.0){
+			acumulador_difuso= acumulador_difuso+NoL*theMaterial.diffuse*theLights[i].diffuse;
+		}
+	}
+}
 
 //No mezclar colores con posiciones.
 void main() {
-	vec3 L,N;
+	vec3 L,N,V;
 	vec3 acumulador_difuso;
-
 	acumulador_difuso=vec3(0.0,0.0,0.0);
 
-	//Normal del vértice en el espacio de la cámara.
-	vec4 N4=modelToCameraMatrix*vec4(v_normal, 0.0);
-	N=normalize(N4.xyz); //en el s.c.camara
+	vec4 N4=modelToCameraMatrix*vec4(v_normal, 0.0); //Vector del vértice en el s.c. cámara. En homogéneas.
+	N=normalize(N4.xyz); //Vector normal del vértice en el s.c.cámara. Normalizamos el vector3, cogemos solo las coordenadas x, y, z.
+
+	vec4 positionEye4= modelToCameraMatrix*vec4(v_normal,1); //Posición del vértice en el s.c cámara. En homogéneas.
+	vec3 positionEye= positionEye4.xyz; //Para coger las coordenadas x, y, z.
+
+	vec3 V4= (0,0,0,1)-positionEye; //Vector que va del vértice a la cámara. Cámara-posición del vértice en el s.c. cámara. EN homogéneas.
+	V=normalize(V4.xyz);  //Normalizamos el vector, cogiendo las coordenadas x, y, z.
 	for (int i=0; i<active_lights_n;++i){
-		//acumulador difuso= acumulador difuso+Calculo del color. Color difuso del material*color difuso de la luz i-esima*irradiancia de la luz i-esima
-		//LUz direccional?? (x,y,z,0.0)
 		
+		//Luz direccional.
 		if (theLights[i].position.w==0.0){
 			//Vector de la luz direccional
 			L= normalize(-1.0*theLights[i].position.xyz);
-
 			aporte_direccional(i,L,N,acumulador_difuso);
 		
+		}
+		//Luz posicional.
+		else{
+			L= normalize(theLights[i].position.xyz-positionEye); // Del vértice a la luz
+			aporte_posicional(i,L,N,acumulador_difuso);
 		}
 
 	}
