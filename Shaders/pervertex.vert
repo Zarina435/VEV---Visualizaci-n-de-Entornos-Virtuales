@@ -44,11 +44,12 @@ float specular_factor( const vec3 n, const vec3 l, const vec3 v, float m, int i)
 	vec3 r= normalize(2*dot(n,l)*n-l); //Aplicamos fórmula y normalizamos.
 
 	//Factor especular= (n*l)max(0,(r*v)^m)m*i.
-	float base= dot(r,v) //Calculamos la base de la potencia.
+	float factor_especular=0.0;
+	float base= dot(r,v); //Calculamos la base de la potencia.
 	//Comprobamos que la base de la potencia no es 0.
 	if (base>0.0){ 
 		//Aplicamos la fórmula.
-		float factor_especular=dot(n,l)*max(0,pow(base,m)*m*theLights[i].specular;
+		float factor_especular=max(0,pow(base,m));
 	}
 	return factor_especular;
 }
@@ -58,7 +59,9 @@ void aporte_direccional(in int i, in vec3 l, in vec3 n, in vec3 v, inout vec3 ac
 	float NoL= lambert_factor(n,l);
 	if(NoL>0.0){
 		acumulador_difuso= acumulador_difuso+NoL*theLights[i].diffuse;
-		acumulador_especular= acumulador_especular+ specular_factor(n,l,v,theMaterial.shininess,i);
+
+		float especular= specular_factor(n,l,v,theMaterial.shininess,i);
+		acumulador_especular= acumulador_especular+dot(n,l)*especular*theMaterial.specular*theLights[i].specular;
 	}
 	
 }
@@ -67,10 +70,16 @@ void aporte_posicional(in int i, in vec3 l, in vec3 n, in vec3 v, in float d, in
 	if(length(l)>0.0){
 		float NoL= lambert_factor(n,l);
 		if (NoL>0.0){
+			//Calculamos la atenuación. Primero el denominador de la fracción.
 			float fdist= theLights[i].attenuation[0]+theLights[i].attenuation[1]*d+theLights[i].attenuation[2]*d*d; //Calculamos el denominador.
+			//Comprobamos que el denominador no sea 0.
 			if(fdist>0.0){ //Si el denominador no es 0.
+				//Terminamos de calcular la atenuación.
 				fdist=1/fdist; //Hacemos la división.
 				acumulador_difuso= acumulador_difuso+NoL*theMaterial.diffuse*theLights[i].diffuse*fdist;
+
+				float especular= specular_factor(n,l,v,theMaterial.shininess,i);
+				acumulador_especular= acumulador_especular+dot(n,l)*especular*theMaterial.specular*theLights[i].specular*fdist;
 			}
 			
 		}
