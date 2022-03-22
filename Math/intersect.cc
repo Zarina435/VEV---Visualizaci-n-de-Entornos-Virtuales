@@ -17,17 +17,24 @@
 
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 	/* =================== PUT YOUR CODE HERE ====================== */
-	//Calcular distancia del centro de la esfera al plano.
-	float dist= pl->distance(bs->m_centre);
-	//Si la distancia es mayor que el radio, no intersectan.
-	if (dist>bs->m_radius){
-		return IREJECT;
-	}
-	//Si la distancia es menor, intersectan.
-	else{
-		return IINTERSECT;
-	}
-
+	//Distancia plano al centro.
+	float dist = pl->distance(bs->getPosition());   
+	//Radio de la esfera. 
+    float radio = bs->getRadius();      
+    //INTERSECTAN, la distancia es menor al radio.
+    if (dist < radio) {
+        return IINTERSECT;
+    }
+    else {
+        //dentro o fuera?? mirar la direccion del vector normal
+        side = pl->whichSide(bs->getPosition());
+        if (side == -1) {
+             return -IREJECT;
+        }
+        else if (side == 1) {
+            return +IREJECT;
+        }
+    }
 	/* =================== END YOUR CODE HERE ====================== */
 }
 

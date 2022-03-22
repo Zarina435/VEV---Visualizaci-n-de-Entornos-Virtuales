@@ -49,9 +49,9 @@ Vector3 Trfm3D::transformPoint(const Vector3 & P) const {
 	/* =================== PUT YOUR CODE HERE ====================== */
 	//Multiplicar punto por matriz de transformación.
 	// m_scl es el escalado y m_tr la columna de translación.
-	res[0] = m_c1[0]*P[0]*m_scl + m_c2[0]*P[1]*m_scl + m_c3[0]*P[2]*m_scl + m_tr[0];
-	res[1] = m_c1[1]*P[0]*m_scl + m_c2[1]*P[1]*m_scl + m_c3[1]*P[2]*m_scl + m_tr[1];
-	res[2] = m_c1[2]*P[0]*m_scl +m_c2[2]*P[1]*m_scl + m_c3[2]*P[2]*m_scl + m_tr[2];
+	res[0] = m_c1[0]*P[0]*m_scl + m_c2[0]*P[1]*m_scl + m_c3[0]*P[2]*m_scl + m_tr[0]*1;
+	res[1] = m_c1[1]*P[0]*m_scl + m_c2[1]*P[1]*m_scl + m_c3[1]*P[2]*m_scl + m_tr[1]*1;
+	res[2] = m_c1[2]*P[0]*m_scl +m_c2[2]*P[1]*m_scl + m_c3[2]*P[2]*m_scl + m_tr[2]*1;
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
 }
