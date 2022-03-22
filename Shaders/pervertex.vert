@@ -39,28 +39,54 @@ float lambert_factor(vec3 n, vec3 l){
 	return max(dot(n,l),0.0);
 }
 
-void aporte_direccional(in int i, in vec3 l, in vec3 n, inout vec3 acumulador_difuso){
+//m es el brillo del materia (theMaterial.shininess).
+float specular_factor( const vec3 n, const vec3 l, const vec3 v, float m, int i){
+	vec3 r= normalize(2*dot(n,l)*n-l); //Aplicamos fórmula y normalizamos.
+
+	//Factor especular= (n*l)max(0,(r*v)^m)m*i.
+	float base= dot(r,v) //Calculamos la base de la potencia.
+	//Comprobamos que la base de la potencia no es 0.
+	if (base>0.0){ 
+		//Aplicamos la fórmula.
+		float factor_especular=dot(n,l)*max(0,pow(base,m)*m*theLights[i].specular;
+	}
+	return factor_especular;
+}
+
+void aporte_direccional(in int i, in vec3 l, in vec3 n, in vec3 v, inout vec3 acumulador_difuso, inout vec3 acumulador_especular){
 	//Calcular Lambert
 	float NoL= lambert_factor(n,l);
 	if(NoL>0.0){
 		acumulador_difuso= acumulador_difuso+NoL*theLights[i].diffuse;
+		acumulador_especular= acumulador_especular+ specular_factor(n,l,v,theMaterial.shininess,i);
 	}
+	
 }
 	
-void aporte_posicional(in int i, in vec3 l, in vec3 n, inout vec3 acumulador_difuso){
+void aporte_posicional(in int i, in vec3 l, in vec3 n, in vec3 v, in float d, inout vec3 acumulador_difuso, inout vec3 acumulador_especular){
 	if(length(l)>0.0){
 		float NoL= lambert_factor(n,l);
 		if (NoL>0.0){
-			acumulador_difuso= acumulador_difuso+NoL*theMaterial.diffuse*theLights[i].diffuse;
+			float fdist= theLights[i].attenuation[0]+theLights[i].attenuation[1]*d+theLights[i].attenuation[2]*d*d; //Calculamos el denominador.
+			if(fdist>0.0){ //Si el denominador no es 0.
+				fdist=1/fdist; //Hacemos la división.
+				acumulador_difuso= acumulador_difuso+NoL*theMaterial.diffuse*theLights[i].diffuse*fdist;
+			}
+			
 		}
 	}
 }
 
 //No mezclar colores con posiciones.
 void main() {
+	//n es el vector normal.
+    //l es el vector de la luz.
+	//v es el vector que va a la cámara.
 	vec3 L,N,V;
 	vec3 acumulador_difuso;
 	acumulador_difuso=vec3(0.0,0.0,0.0);
+	vec3 acumulador_especular;
+	acumulador_especular=vec3(0.0,0.0,0.0);
 
 	vec4 N4=modelToCameraMatrix*vec4(v_normal, 0.0); //Vector del vértice en el s.c. cámara. En homogéneas.
 	N=normalize(N4.xyz); //Vector normal del vértice en el s.c.cámara. Normalizamos el vector3, cogemos solo las coordenadas x, y, z.
@@ -76,13 +102,15 @@ void main() {
 		if (theLights[i].position.w==0.0){
 			//Vector de la luz direccional
 			L= normalize(-1.0*theLights[i].position.xyz);
-			aporte_direccional(i,L,N,acumulador_difuso);
+			aporte_direccional(i,L,N,V,acumulador_difuso,acumulador_especular);
 		
 		}
 		//Luz posicional.
 		else{
-			L= normalize(theLights[i].position.xyz-positionEye); // Del vértice a la luz
-			aporte_posicional(i,L,N,acumulador_difuso);
+			L= theLights[i].position.xyz-positionEye; // Del vértice a la luz
+			float d= length(L); //distancia euclídea.
+			L= normalize(L); //normalizamos L.
+			aporte_posicional(i,L,N,V,d,acumulador_difuso,acumulador_especular);
 		}
 
 	}
@@ -92,3 +120,4 @@ void main() {
 	f_texCoord= v_texCoord;
 	gl_Position = modelToClipMatrix * vec4(v_position, 1);
 }
+//Posición(1,1,1,1)-> Modelview*Posición(1,1,1,1) hay que normalizar.
