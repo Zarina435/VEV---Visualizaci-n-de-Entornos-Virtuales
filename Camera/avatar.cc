@@ -40,15 +40,39 @@ bool Avatar::getWalkorFly() const {
 // Return: true if the avatar moved, false if not.
 
 bool Avatar::advance(float step) {
-
+	//Desde el nodo raíz.
 	Node *rootNode = Scene::instance()->rootNode();
 	/* =================== PUT YOUR CODE HERE ====================== */
-	if (m_walk)
+	//Nos movemos hacia adelante, en caso de que colisione con algún objeto nos moveremos hacia atrás.
+	if (m_walk){
 		m_cam->walk(step);
-	else
+	}
+	else{
 		m_cam->fly(step);
+	}
+	//El avatar se ha desplazado.
+	bool avatar_desplazado = true;
+	//Actualizamos la nueva posición de la cámara.
+	m_bsph->setPosition(m_cam->getPosition());
+	//Comprobamos si colisiona con algún objeto.
+	const Node *chocan = rootNode->checkCollision(m_bsph);
+	//En caso de que colisione.
+	if(chocan != 0){
+		//Nos movemos hacia atrás.
+		if (m_walk){
+			m_cam->walk(-step);
+		}
+		else{
+			m_cam->fly(-step);
+		}	
+		//Volvemos a actualizar la posición de la cámara.
+		m_bsph->setPosition(m_cam->getPosition());
+		//El avatar no se ha desplazado.
+		avatar_desplazado = false;
+	}
+	//devolvemos si se ha movido o no.
+	return avatar_desplazado;
 	/* =================== END YOUR CODE HERE ====================== */
-	return true;
 }
 
 void Avatar::leftRight(float angle) {
