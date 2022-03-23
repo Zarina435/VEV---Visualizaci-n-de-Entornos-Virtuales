@@ -27,7 +27,7 @@ int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
     }
     else {
         //dentro o fuera?? mirar la direccion del vector normal
-        side = pl->whichSide(bs->getPosition());
+        int side = pl->whichSide(bs->getPosition());
         if (side == -1) {
              return -IREJECT;
         }

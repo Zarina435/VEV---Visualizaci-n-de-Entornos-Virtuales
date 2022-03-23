@@ -40,7 +40,7 @@ float lambert_factor(vec3 n, vec3 l){
 }
 
 //m es el brillo del materia (theMaterial.shininess).
-float specular_factor( const vec3 n, const vec3 l, const vec3 v, float m, int i){
+float specular_factor( const vec3 n, const vec3 l, const vec3 v, float m){
 	vec3 r= normalize(2*dot(n,l)*n-l); //Aplicamos fórmula y normalizamos.
 
 	//Factor especular= (n*l)max(0,(r*v)^m)m*i.
@@ -49,7 +49,7 @@ float specular_factor( const vec3 n, const vec3 l, const vec3 v, float m, int i)
 	//Comprobamos que la base de la potencia no es 0.
 	if (base>0.0){ 
 		//Aplicamos la fórmula.
-		float factor_especular=max(0,pow(base,m));
+		 factor_especular=pow(base,m);
 	}
 	return factor_especular;
 }
@@ -58,16 +58,16 @@ void aporte_direccional(in int i, in vec3 l, in vec3 n, in vec3 v, inout vec3 ac
 	//Calcular Lambert
 	float NoL= lambert_factor(n,l);
 	if(NoL>0.0){
-		acumulador_difuso= acumulador_difuso+NoL*theLights[i].diffuse;
+		acumulador_difuso= acumulador_difuso+NoL*theLights[i].diffuse*theMaterial.diffuse;
 
-		float especular= specular_factor(n,l,v,theMaterial.shininess,i);
-		acumulador_especular= acumulador_especular+dot(n,l)*especular*theMaterial.specular*theLights[i].specular;
+		float especular= specular_factor(n,l,v,theMaterial.shininess);
+		acumulador_especular= acumulador_especular+NoL*especular*theMaterial.specular*theLights[i].specular;
 	}
 	
 }
 	
 void aporte_posicional(in int i, in vec3 l, in vec3 n, in vec3 v, in float d, inout vec3 acumulador_difuso, inout vec3 acumulador_especular){
-	if(length(l)>0.0){
+	if(d>0.0){
 		float NoL= lambert_factor(n,l);
 		if (NoL>0.0){
 			//Calculamos la atenuación. Primero el denominador de la fracción.
@@ -76,10 +76,10 @@ void aporte_posicional(in int i, in vec3 l, in vec3 n, in vec3 v, in float d, in
 			if(fdist>0.0){ //Si el denominador no es 0.
 				//Terminamos de calcular la atenuación.
 				fdist=1/fdist; //Hacemos la división.
-				acumulador_difuso= acumulador_difuso+NoL*theMaterial.diffuse*theLights[i].diffuse*fdist;
+				acumulador_difuso= acumulador_difuso+(NoL*theMaterial.diffuse*theLights[i].diffuse*fdist);
 
-				float especular= specular_factor(n,l,v,theMaterial.shininess,i);
-				acumulador_especular= acumulador_especular+dot(n,l)*especular*theMaterial.specular*theLights[i].specular*fdist;
+				float especular= specular_factor(n,l,v,theMaterial.shininess);
+				acumulador_especular= acumulador_especular+NoL*especular*theMaterial.specular*theLights[i].specular*fdist;
 			}
 			
 		}
@@ -100,7 +100,7 @@ void main() {
 	vec4 N4=modelToCameraMatrix*vec4(v_normal, 0.0); //Vector del vértice en el s.c. cámara. En homogéneas.
 	N=normalize(N4.xyz); //Vector normal del vértice en el s.c.cámara. Normalizamos el vector3, cogemos solo las coordenadas x, y, z.
 
-	vec4 positionEye4= modelToCameraMatrix*vec4(v_normal,1); //Posición del vértice en el s.c cámara. En homogéneas.
+	vec4 positionEye4= modelToCameraMatrix*vec4(v_position,1); //Posición del vértice en el s.c cámara. En homogéneas.
 	vec3 positionEye= positionEye4.xyz; //Para coger las coordenadas x, y, z.
 
 	vec3 V4= (0,0,0,1)-positionEye; //Vector que va del vértice a la cámara. Cámara-posición del vértice en el s.c. cámara. EN homogéneas.
@@ -124,9 +124,9 @@ void main() {
 
 	}
 	f_color=vec4(0.0,0.0,0.0, 1.0); //Canales rojo, azul, verde y opacidad.
-	f_color.rgb= acumulador_difuso;
+	f_color.rgb= scene_ambient+acumulador_difuso+acumulador_especular;
 	//Coordenadas de textura que se pasan del vertex-shader al fragment shader
 	f_texCoord= v_texCoord;
-	gl_Position = modelToClipMatrix * vec4(v_position, 1);
+	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }
 //Posición(1,1,1,1)-> Modelview*Posición(1,1,1,1) hay que normalizar.
