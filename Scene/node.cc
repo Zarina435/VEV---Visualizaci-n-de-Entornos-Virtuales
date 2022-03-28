@@ -250,10 +250,20 @@ Node *Node::nextSibling() {
 
 Node *Node::firstChild() {
 	if (!m_children.size()) return this;
+<<<<<<< HEAD
 	Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
 – Vector3 Trfm3D::transformVector(const Vector3 & V) const;
 – void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );
 Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go * Node::cycleChild(size_t idx) {
+=======
+	return *(m_children.begin());
+}
+	/*Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
+ Vector3 Trfm3D::transformVector(const Vector3 & V) const;
+ void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );*/
+//Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go 
+Node * Node::cycleChild(size_t idx) {
+>>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 
 	size_t m = idx % m_children.size();
 	size_t i = 0;
@@ -276,15 +286,21 @@ void Node::addChild(Node *theChild) {
 	if (m_gObject) {
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node has a gObject, so print warning
-
+         printf("ERROR");
 		/* =================== END YOUR CODE HERE ====================== */
 	} else {
-		m_gObject->add(theChild);
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node does not have gObject, so attach child
+<<<<<<< HEAD
 		theChild->m_parent=this;
 		m_children->push_back(theChild);
 		m_gObject->add(theChild);
+=======
+		//No es un nodo hoja.
+		theChild->m_parent=this;
+		m_children.push_back(theChild);
+		updateGS();
+>>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 		/* =================== END YOUR CODE HERE ====================== */
 
 	}
@@ -313,6 +329,13 @@ void Node::detach() {
 
 void Node::propagateBBRoot() {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Actualizamos la BBox.
+	updateBB();
+	//m_parent->updateBB();
+	//Si tiene padre, propagamos hacia arriba. Si no tiene padre, significa que es la raíz y no hay que propagar.
+	if(m_parent){
+		m_parent->propagateBBRoot();
+	}
 
 	/* =================== END YOUR CODE HERE ====================== */
 }
@@ -346,7 +369,21 @@ void Node::propagateBBRoot() {
 
 void Node::updateBB () {
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	//Si es un nodo hoja.
+	if(m_gObject){
+		m_containerWC->clone(m_gObject->getContainer());
+		m_containerWC->transform(m_placementWC);
+	}
+	//Si no es un nodo hoja.
+	else{
+		m_containerWC->init();
+		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
+        auto theChild = *it;
+		m_containerWC->include(theChild->m_containerWC);
+    }
+		
+	}
+	
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -366,13 +403,21 @@ void Node::updateBB () {
 //
 //    See Recipe 1 at the beggining of the file in for knowing how to
 //    iterate through children.
+<<<<<<< HEAD
 /*	Soy el nodo root? Tengo padre?? (si mi padre es 0, es que soy el root)
 	m_placementWC=m_placement
 	si-> llamar recurvamente a upadateWC con tus hijossi los tienes
+=======
+
+/*	Soy el nodo root? Tengo padre?? (si mi padre es 0, es que soy el root)
+	m_placementWC=m_placement
+	si-> llamar recursivamente a upadateWC con tus hijos si los tienes
+>>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 	no-> m_placementWC= COMPOSICION(m_placementWC_de_mi_padre, m_placement)*/
 void Node::updateWC() {
 	/* =================== PUT YOUR CODE HERE ====================== */
 	if (m_parent==0){
+<<<<<<< HEAD
 		m_placementWC.clone(m_placement);
 	}
 	else{
@@ -384,6 +429,21 @@ void Node::updateWC() {
 	}
 	
 	}
+=======
+		m_placementWC->clone(m_placement);
+	}
+	else{
+		m_placementWC->clone(m_parent->m_placementWC);
+		m_placementWC->add(m_placement);
+		
+	}
+	for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
+        	auto theChild = *it;
+        	theChild->updateWC(); // or any other thing
+		}
+	updateBB();
+	
+>>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -397,7 +457,15 @@ void Node::updateWC() {
 
 void Node::updateGS() {
 	/* =================== PUT YOUR CODE HERE ====================== */
+<<<<<<< HEAD
 	updateWC();
+=======
+	//Actualizar, y si es padre propagar.
+	updateWC();
+	if(m_parent){
+		m_parent->propagateBBRoot();
+	}
+>>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -446,7 +514,11 @@ void Node::draw() {
 	if (m_gObject){
 		//NODO HOJA
 		rs->push(RenderState::modelview);
+<<<<<<< HEAD
 		rs->addTrfm(RenderState::modelview, this->m_placement);
+=======
+	    rs->addTrfm(RenderState::modelview, this->m_placementWC);
+>>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 		m_gObject->draw(); //dibujar objeto
 		rs->pop(RenderState::modelview);
 	}else{
@@ -455,6 +527,7 @@ void Node::draw() {
         		Node *theChild = *it;
         		theChild->draw(); // or any other thing
 		}
+		
 	}
 	/* =================== END YOUR CODE HERE ====================== */
 
@@ -462,7 +535,7 @@ void Node::draw() {
 		// restore shader
 		rs->setShader(prev_shader);
 	}
-	rs->pop(RenderState::modelview);
+	//rs->pop(RenderState::modelview);
 }
 
 // Set culled state of a node's children
@@ -499,10 +572,30 @@ void Node::frustumCull(Camera *cam) {
 const Node *Node::checkCollision(const BSphere *bsph) const {
 	if (!m_checkCollision) return 0;
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	//comprobamos si la esfera intersecta con el nodo actual.
+	if(BSphereBBoxIntersect(bsph,this->m_containerWC)==IINTERSECT) {
+		//En caso de que intersecten, si el nodo tiene un objeto, lo devolvemos.
+		if (m_gObject){
+			return this;
+		}
+		//En caso de que no tenga un objeto.
+		else{
+			//Recorremos los hijos.
+			for(list<Node *>::const_iterator it = m_children.begin(), end = m_children.end();it != end; ++it) {
+				const Node *theChild = *it;
+				//Comprobamos si los hijos colisionan con la esfera.
+				const Node *colisionHijo = theChild->checkCollision(bsph);
+				//En caso de que si, devolvemos el nodo con el que colisiona.
+				if(colisionHijo!=0){
+					return colisionHijo;
+				}
+			}
+		}
+	}
+	return 0;
+	
 	/* =================== END YOUR CODE HERE ====================== */
 }
-
 void Node::print_trfm(int sep) const {
 	std::string delim(sep,' ');
 	printf("%sNode:%s\n", delim.c_str(), m_name.c_str());
@@ -513,3 +606,15 @@ void Node::print_trfm(int sep) const {
 		theChild->print_trfm(sep + 1);
 	}
 }
+/* empieza con el root, mira a ver si hay interseccion. 
+Si no es un nodo hoja, mira a ver que pasa con sus hijos, hay colision?
+cuando haya una colisión con un objeto salgo, no hay que checkear nada más.
+
+SI HAY COLISIÓN CON OBJETO-> SALGO //Caso básico de la recursión
+NO HAY COLISIÓN CON OBJETO-> MIRAR HIJOS (Recursivamente) //profundidad y anchura . 
+							SI no hay colision con ese, con sus hijos tampoco (recorrido en anchura mejor)
+							
+							
+con el nodo root miramos si colisiona la esfera  con el BBox, se llam recursivamente
+a la función que lo checkea. Mirar con que hijos colisiona. Hay que encontrar el nodo
+hoja con el que colisiona.*/

@@ -89,7 +89,26 @@ void Light::placeScene() {
 	Trfm3D &modelView = rs->top(RenderState::modelview);
 
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//modelview esta en render state
+	/*if es direccional
+		guardar modelview *vector_direccion_de_la_luz
+	else
+		if es posicional
+			guardar modelview* posicion_de_la_luz
+		else (es spotlight)
+			guardar modelview* posicion_de_la_luz
+			modificar la direccion del spot
+	*/
+	if (m_type==directional){
+		m_positionEye= modelView.transformVector(m_position);
+		m_positionEye= m_positionEye.normalize();
+	}
+	else{
+		m_positionEye= modelView.transformPoint(m_position);
+	}
+		
 
+	
 	/* =================== END YOUR CODE HERE ====================== */
 }
 

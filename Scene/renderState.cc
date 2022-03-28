@@ -16,8 +16,12 @@ RenderState::RenderState() :
 	m_activeShader(0),
 	m_drawBBox(false) {}
 
+float RenderState :: getSc() const {return m_sc;}
+void RenderState :: setSc(float v) {m_sc=v;}
+
 RenderState::~RenderState() {}
 
+	
 ///////////////////////////////////////////////////////////////
 // Matrix stack stuff
 

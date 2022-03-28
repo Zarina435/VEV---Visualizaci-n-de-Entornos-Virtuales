@@ -23,10 +23,12 @@ Line & Line::operator=(const Line & line) {
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 	/* =================== PUT YOUR CODE HERE ====================== */ 
-
 	Vector3 v_aux=B-A;
+	//Si el vector es 0, es porque A y B son el mismo punto.
 		if (v_aux.length()>0){
+			//A es el origen.
 			m_O=A;
+			//Normalizar el vector.
 			m_d =v_aux.normalize();
 		}
 		else{
@@ -41,6 +43,7 @@ void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 Vector3 Line::at(float u) const {
 	Vector3 res;
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Aplicar fórmula.
 	res= m_O+u*m_d;
 	/* =================== END YOUR CODE HERE ====================== */
 	return res;
@@ -54,7 +57,9 @@ float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
 	/* =================== PUT YOUR CODE HERE ====================== */
 	float denominador=  m_d.dot(m_d);
+	//Comprobar si el denominador es 0, para no hacer una división entre 0.
 	if(denominador>0.0){
+		//Aplicar fórmula.
 		res= (m_d.dot(P-m_O))/ denominador;
 	}
 	else{
@@ -72,10 +77,14 @@ float Line::paramDistance(const Vector3 & P) const {
 float Line::distance(const Vector3 & P) const {
 	float res = 0.0f;
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Calcular distancia al punto.
 	float u0=paramDistance(P);
+	//Comprobar si la distancia es mayor a 0.
 	if(u0>0.0){
+		//Aplicamos la fórmula.
 		Vector3 aux=P - (m_O + u0*m_d);
-		res=aux.dot(aux); //se puede hacer aux.lenght() que es el módulo del vector aux
+		//aux.lenght()  es el módulo del vector aux.
+		res=aux.length();
 	}
 	else{
 		printf("Error");
