@@ -250,12 +250,6 @@ Node *Node::nextSibling() {
 
 Node *Node::firstChild() {
 	if (!m_children.size()) return this;
-<<<<<<< HEAD
-	Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
-– Vector3 Trfm3D::transformVector(const Vector3 & V) const;
-– void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );
-Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go * Node::cycleChild(size_t idx) {
-=======
 	return *(m_children.begin());
 }
 	/*Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
@@ -263,7 +257,6 @@ Nota: Para visualizar los resultados de este apartado utilizaremos el programa b
  void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );*/
 //Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go 
 Node * Node::cycleChild(size_t idx) {
->>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 
 	size_t m = idx % m_children.size();
 	size_t i = 0;
@@ -291,16 +284,10 @@ void Node::addChild(Node *theChild) {
 	} else {
 		/* =================== PUT YOUR CODE HERE ====================== */
 		// node does not have gObject, so attach child
-<<<<<<< HEAD
-		theChild->m_parent=this;
-		m_children->push_back(theChild);
-		m_gObject->add(theChild);
-=======
 		//No es un nodo hoja.
 		theChild->m_parent=this;
 		m_children.push_back(theChild);
 		updateGS();
->>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 		/* =================== END YOUR CODE HERE ====================== */
 
 	}
@@ -403,33 +390,14 @@ void Node::updateBB () {
 //
 //    See Recipe 1 at the beggining of the file in for knowing how to
 //    iterate through children.
-<<<<<<< HEAD
-/*	Soy el nodo root? Tengo padre?? (si mi padre es 0, es que soy el root)
-	m_placementWC=m_placement
-	si-> llamar recurvamente a upadateWC con tus hijossi los tienes
-=======
 
 /*	Soy el nodo root? Tengo padre?? (si mi padre es 0, es que soy el root)
 	m_placementWC=m_placement
 	si-> llamar recursivamente a upadateWC con tus hijos si los tienes
->>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 	no-> m_placementWC= COMPOSICION(m_placementWC_de_mi_padre, m_placement)*/
 void Node::updateWC() {
 	/* =================== PUT YOUR CODE HERE ====================== */
 	if (m_parent==0){
-<<<<<<< HEAD
-		m_placementWC.clone(m_placement);
-	}
-	else{
-		m_placementWC.clone(m_parent.m_placementWC.add(m_placement));
-		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
-        	auto theChild = *it;
-        	theChild->print(); // or any other thing
-		}
-	}
-	
-	}
-=======
 		m_placementWC->clone(m_placement);
 	}
 	else{
@@ -443,7 +411,6 @@ void Node::updateWC() {
 		}
 	updateBB();
 	
->>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -457,15 +424,11 @@ void Node::updateWC() {
 
 void Node::updateGS() {
 	/* =================== PUT YOUR CODE HERE ====================== */
-<<<<<<< HEAD
-	updateWC();
-=======
 	//Actualizar, y si es padre propagar.
 	updateWC();
 	if(m_parent){
 		m_parent->propagateBBRoot();
 	}
->>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -514,11 +477,7 @@ void Node::draw() {
 	if (m_gObject){
 		//NODO HOJA
 		rs->push(RenderState::modelview);
-<<<<<<< HEAD
-		rs->addTrfm(RenderState::modelview, this->m_placement);
-=======
 	    rs->addTrfm(RenderState::modelview, this->m_placementWC);
->>>>>>> f2424171a5f905ee0dabb6e54c0613cb98be7672
 		m_gObject->draw(); //dibujar objeto
 		rs->pop(RenderState::modelview);
 	}else{
@@ -609,7 +568,6 @@ void Node::print_trfm(int sep) const {
 /* empieza con el root, mira a ver si hay interseccion. 
 Si no es un nodo hoja, mira a ver que pasa con sus hijos, hay colision?
 cuando haya una colisión con un objeto salgo, no hay que checkear nada más.
-
 SI HAY COLISIÓN CON OBJETO-> SALGO //Caso básico de la recursión
 NO HAY COLISIÓN CON OBJETO-> MIRAR HIJOS (Recursivamente) //profundidad y anchura . 
 							SI no hay colision con ese, con sus hijos tampoco (recorrido en anchura mejor)

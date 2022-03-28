@@ -86,6 +86,27 @@ void aporte_posicional(in int i, in vec3 l, in vec3 n, in vec3 v, in float d, in
 	}
 }
 
+void aporte_spot(in int i, in vec3 l, in vec3 n, in vec3 v, inout vec3 acumulador_difuso, inout vec3 acumulador_especular){
+	
+	float NoL=lambert_factor(n,l);
+	if (NoL>0.0){
+		vec3 direccion= normalize(theLights[i].spotDir); //Dirección de la luz.
+		float cos= dot(direccion,-l); //Calculamos el coseno entre la dirección de la luz y el vector de la luz.
+		float cspot=0.0;
+	
+		if(cos>0.0){ //La base de la potencia no es 0.
+			if(cos>theLights[i].cosCutOff){ //dentro del cono.
+				cspot= pow(cos, theLights[i].exponent); //Aplicamos la fórmula.
+				float especular= specular_factor(n,l,v,theMaterial.shininess);
+
+				acumulador_difuso= acumulador_difuso+ NoL*theMaterial.diffuse*theLights[i].diffuse*cspot;
+				acumulador_especular= acumulador_especular+ NoL*especular*theMaterial.specular*theLights[i].specular*cspot;
+			}
+		}
+	}
+	
+}
+
 //No mezclar colores con posiciones.
 void main() {
 	//n es el vector normal.
@@ -114,12 +135,19 @@ void main() {
 			aporte_direccional(i,L,N,V,acumulador_difuso,acumulador_especular);
 		
 		}
-		//Luz posicional.
 		else{
 			L= theLights[i].position.xyz-positionEye; // Del vértice a la luz
 			float d= length(L); //distancia euclídea.
 			L= normalize(L); //normalizamos L.
-			aporte_posicional(i,L,N,V,d,acumulador_difuso,acumulador_especular);
+			//Luz posicional.
+			if(theLights[i].cosCutOff==0){
+				aporte_posicional(i,L,N,V,d,acumulador_difuso,acumulador_especular);
+			}
+			//Spotlight
+			else{
+				aporte_spot(i,L,N,V,acumulador_difuso,acumulador_especular);
+			}
+			
 		}
 
 	}
@@ -129,4 +157,4 @@ void main() {
 	f_texCoord= v_texCoord;
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }
-//Posición(1,1,1,1)-> Modelview*Posición(1,1,1,1) hay que normalizar.
+//Posición(1,1,1,1)-> Modelview*Posición(1,1,1,1) hay que normalizar... .
