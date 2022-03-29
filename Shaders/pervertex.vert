@@ -87,23 +87,29 @@ void aporte_posicional(in int i, in vec3 l, in vec3 n, in vec3 v, in float d, in
 }
 
 void aporte_spot(in int i, in vec3 l, in vec3 n, in vec3 v, inout vec3 acumulador_difuso, inout vec3 acumulador_especular){
-	
-	float NoL=lambert_factor(n,l);
-	if (NoL>0.0){
-		vec3 direccion= normalize(theLights[i].spotDir); //Dirección de la luz.
-		float cos= dot(direccion,-l); //Calculamos el coseno entre la dirección de la luz y el vector de la luz.
-		float cspot=0.0;
-	
+
+
+	vec3 direccion= normalize(theLights[i].spotDir); //Dirección de la luz.
+	float cos= dot(direccion,-l); //Calculamos el coseno entre la dirección de la luz y el vector de la luz.
+	float cspot=0.0;
+
+	//Si el coseno del cutOff es mayor, es que el ángulo del cosCutOff es menor y está dentro del cono.
+	if(cos>theLights[i].cosCutOff){ //dentro del cono.
+
 		if(cos>0.0){ //La base de la potencia no es 0.
-			if(cos>theLights[i].cosCutOff){ //dentro del cono.
+
+			float NoL=lambert_factor(n,l);
+			if (NoL>0.0){
 				cspot= pow(cos, theLights[i].exponent); //Aplicamos la fórmula.
 				float especular= specular_factor(n,l,v,theMaterial.shininess);
 
 				acumulador_difuso= acumulador_difuso+ NoL*theMaterial.diffuse*theLights[i].diffuse*cspot;
 				acumulador_especular= acumulador_especular+ NoL*especular*theMaterial.specular*theLights[i].specular*cspot;
+
 			}
 		}
 	}
+
 	
 }
 
@@ -153,6 +159,7 @@ void main() {
 	}
 	f_color=vec4(0.0,0.0,0.0, 1.0); //Canales rojo, azul, verde y opacidad.
 	f_color.rgb= scene_ambient+acumulador_difuso+acumulador_especular;
+
 	//Coordenadas de textura que se pasan del vertex-shader al fragment shader
 	f_texCoord= v_texCoord;
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
