@@ -64,19 +64,17 @@ void aporte_posicional(in int i, in vec3 l, in vec3 n, in vec3 v, in float d, in
 		if (NoL>0.0){
 			//Calculamos la atenuación. Primero el denominador de la fracción.
 			float fdist= theLights[i].attenuation[0]+theLights[i].attenuation[1]*d+theLights[i].attenuation[2]*d*d; //Calculamos el denominador.
-			//Comprobamos que el denominador no sea 0.
-			if(fdist>0.0){ //Si el denominador no es 0.
-				//Terminamos de calcular la atenuación.
+			//Compro(0,0,0,1)-f_position4;rminamos de calcular la atenuación.
 				fdist=1/fdist; //Hacemos la división.
 				acumulador_difuso= acumulador_difuso+(NoL*theMaterial.diffuse*theLights[i].diffuse*fdist);
 
 				float especular= specular_factor(n,l,v,theMaterial.shininess);
 				acumulador_especular= acumulador_especular+NoL*especular*theMaterial.specular*theLights[i].specular*fdist;
-			}
-			
 		}
+			
 	}
 }
+
 
 void aporte_spot(in int i, in vec3 l, in vec3 n, in vec3 v, inout vec3 acumulador_difuso, inout vec3 acumulador_especular){
 
@@ -118,7 +116,7 @@ void main() {
 	acumulador_especular=vec3(0.0,0.0,0.0);
 
 	N=normalize(f_normal); //normal en el sistema de la cámara y normalizada.
-	v=normalize(f_viewDirection); // Vector que va desde el vértice a la cámara.
+	V=normalize(f_viewDirection); // Vector que va desde el vértice a la cámara.
 	
 
 
@@ -132,7 +130,7 @@ void main() {
 		
 		}
 		else{
-			L= theLights[i].position.xyz-positionEye; // Del vértice a la luz
+			L= theLights[i].position.xyz-f_position; // Del vértice a la luz
 			float d= length(L); //distancia euclídea.
 			L= normalize(L); //normalizamos L.
 			//Luz posicional.
