@@ -67,22 +67,22 @@ void aporte_direccional(in int i, in vec3 l, in vec3 n, in vec3 v, inout vec3 ac
 }
 	
 void aporte_posicional(in int i, in vec3 l, in vec3 n, in vec3 v, in float d, inout vec3 acumulador_difuso, inout vec3 acumulador_especular){
-	if(d>0.0){
-		float NoL= lambert_factor(n,l);
-		if (NoL>0.0){
-			//Calculamos la atenuación. Primero el denominador de la fracción.
-			float fdist= theLights[i].attenuation[0]+theLights[i].attenuation[1]*d+theLights[i].attenuation[2]*d*d; //Calculamos el denominador.
-			//Comprobamos que el denominador no sea 0.
-			if(fdist>0.0){ //Si el denominador no es 0.
-				//Terminamos de calcular la atenuación.
-				fdist=1/fdist; //Hacemos la división.
-				acumulador_difuso= acumulador_difuso+(NoL*theMaterial.diffuse*theLights[i].diffuse*fdist);
-
-				float especular= specular_factor(n,l,v,theMaterial.shininess);
-				acumulador_especular= acumulador_especular+NoL*especular*theMaterial.specular*theLights[i].specular*fdist;
-			}
-			
+	float NoL= lambert_factor(n,l);
+	if (NoL>0.0){
+		//Calculamos la atenuación. Primero el denominador de la fracción.
+		float fdist= theLights[i].attenuation[0]+theLights[i].attenuation[1]*d+theLights[i].attenuation[2]*d*d; //Calculamos el denominador.
+		//Compro(0,0,0,1)-f_position4;rminamos de calcular la atenuación.
+		if (fdist>0.0){
+			fdist=1/fdist; //Hacemos la división.
 		}
+		else{
+			fdist=1.0;
+		}
+		
+		acumulador_difuso= acumulador_difuso+(NoL*theMaterial.diffuse*theLights[i].diffuse*fdist);
+
+		float especular= specular_factor(n,l,v,theMaterial.shininess);
+		acumulador_especular= acumulador_especular+NoL*especular*theMaterial.specular*theLights[i].specular*fdist;
 	}
 }
 

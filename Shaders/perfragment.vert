@@ -31,5 +31,6 @@ void main() {
 	f_viewDirection = f_viewDirection4.xyz;
 	f_normal = f_normal4.xyz;
 
+	f_texCoord= v_texCoord;
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }
