@@ -513,7 +513,27 @@ void Node::setCulled(bool culled) {
 
 void Node::frustumCull(Camera *cam) {
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Mirar si el BBox esta dentro o fuera.
+	//setCulled 0, estan todos visibles, si es 1, no se ven.
+	int fuera= cam->checkFrustum(m_containerWC, 0);
 
+	//se ven él y todos sus hijos.
+	if (fuera==-1){
+		setCulled(0); //Se ven
+	}
+	//no se ven ni sus hijos ni él.
+	else if (fuera==1){
+		setCulled(1); //No se ven
+	}
+	//Intersecta, hay que dibujarlo y comprobar sus hijos.
+	else{
+		m_isCulled=0; //es visible, hay que comprobar sus hijos.
+		for(auto it = m_children.begin(), end = m_children.end();it != end; ++it) {
+			auto theChild= *it;
+			//comprobar todos sus hijos, llamando a la función.
+			theChild->frustumCull(cam); //Con la misma cámara.
+	}
+	}
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
