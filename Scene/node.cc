@@ -252,10 +252,9 @@ Node *Node::firstChild() {
 	if (!m_children.size()) return this;
 	return *(m_children.begin());
 }
-	/*Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
- Vector3 Trfm3D::transformVector(const Vector3 & V) const;
- void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );*/
-//Nota: Para visualizar los resultados de este apartado utilizaremos el programa browser_go 
+
+
+
 Node * Node::cycleChild(size_t idx) {
 
 	size_t m = idx % m_children.size();

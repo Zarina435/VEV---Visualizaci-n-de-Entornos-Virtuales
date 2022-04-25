@@ -319,30 +319,25 @@ int Camera::checkFrustum(const BBox *theBBox,
 	//No hace falta usar planesBitM
 	//SOn 6 planos, mirar si esta fuera de alguno o dentro de todos.
 
-	int fuera=0;
 	int colisiones=0;
 	for (int i=0; i<6; i++){
 		int intersecta = BBoxPlaneIntersect(theBBox,m_fPlanes[i]); //m_fPlanes guarda los 6 planos.
-		//está fuera
+		// Esta fuera de algún plano, no es visible.
 		if (intersecta== +IREJECT){
-			int fuera=fuera+1;
+			return 1;
 		}
 		else if (intersecta== IINTERSECT){
 			colisiones=colisiones+1;
 		}
 	}
-	// Esta fuera, de algún plano no es visible.
-	if (fuera>0){
-		return 1; 
-	}
+	
 	//Puede estar dentro de los 6 planos, o solo dentro de alguno de ellos.
+	
+	if (colisiones==0){
+		return -1; //Esta dentro de los 6 planos, no choca con ninguno.
+	}
 	else{
-		if (colisiones==0){
-			return -1; //Esta dentro de los 6 planos, no choca con ninguno.
-		}
-		else{
-			return 0; //Intersecta con algún  plano, habrá que comprobar si sus hijos son visibles o no.
-		}
+		return 0; //Intersecta con algún  plano, habrá que comprobar si sus hijos son visibles o no.
 	}
 	
 	/* =================== END YOUR CODE HERE ====================== */
