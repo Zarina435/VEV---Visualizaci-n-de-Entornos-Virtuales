@@ -186,8 +186,9 @@ void  Camera::lookAt(const Vector3 & E,
 	Vector3 F= E-at;
 	m_D=F.normalize();
 
-	Vector3 R= crossVectors(up,m_D);
-	m_R=R.normalize();
+	Vector3 aux= up.normalize();
+	m_R= crossVectors(aux,m_D);
+	
 
 	m_U=crossVectors(m_D,m_R);
 	/* =================== END YOUR CODE HERE ====================== */

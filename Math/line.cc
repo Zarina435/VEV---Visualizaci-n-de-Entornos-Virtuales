@@ -23,13 +23,14 @@ Line & Line::operator=(const Line & line) {
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 	/* =================== PUT YOUR CODE HERE ====================== */ 
-	Vector3 v_aux=B-A;
+	m_d=B-A;
+	m_O=A;
 	//Si el vector es 0, es porque A y B son el mismo punto.
-		if (v_aux.length()>0){
+		if (m_d.length()>0){
 			//A es el origen.
-			m_O=A;
+			//m_O=A;
 			//Normalizar el vector.
-			m_d =v_aux.normalize();
+			m_d =m_d.normalize();
 		}
 		else{
 			printf("Los puntos están cercan");
