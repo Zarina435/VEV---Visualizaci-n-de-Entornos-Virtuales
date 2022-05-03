@@ -256,6 +256,14 @@ void ShaderProgram::beforeDraw() {
 			// Set texture to unit 0
 			tex->bindGLUnit(Constants::gl_texunits::texture);
 			this->send_uniform("texture0", Constants::gl_texunits::texture); // Texture unit 0
+			
+			if (this->has_capability("multitex")){
+				Texture *tex2 = mat->getTexture(1);
+				if (tex2 != 0) {
+					tex2->bindGLUnit(Constants::gl_texunits::rest);
+					this->send_uniform("texture1", Constants::gl_texunits::rest); // Texture unit 2
+				}
+			}
 		}
 		if (this->has_capability("bump")) {
 			tex = mat->getBumpMap();
@@ -273,6 +281,7 @@ void ShaderProgram::beforeDraw() {
 				this->send_uniform("specmap", Constants::gl_texunits::specular); // Texture unit 2
 			}
 		}
+		
 	}
 }
 

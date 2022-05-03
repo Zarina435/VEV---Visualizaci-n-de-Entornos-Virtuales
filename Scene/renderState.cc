@@ -19,6 +19,8 @@ RenderState::RenderState() :
 float RenderState :: getSc() const {return m_sc;}
 void RenderState :: setSc(float v) {m_sc=v;}
 
+float RenderState :: getClouds() const {return m_cloudsOffset;}
+void RenderState :: setClouds(float v) {m_cloudsOffset=v;}
 RenderState::~RenderState() {}
 
 	

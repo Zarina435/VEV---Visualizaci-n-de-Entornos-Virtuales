@@ -13,7 +13,9 @@ void main() {
 	// The final color must be a linear combination of both
 	// textures with a factor of 0.5, e.g:
 	//
-	// color = 0.5 * texture0 + 0.5 * texture1
+	vec4 texColor0 = texture2D(texture0, f_texCoord);
+	vec4 texColor1 = texture2D(texture1, f_texCoord);
+	vec4 color= 0.5 * texColor0 + 0.5 * texColor1;
 
-	gl_FragColor = vec4(1.0);
+	gl_FragColor = color;
 }

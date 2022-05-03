@@ -205,6 +205,9 @@ public:
 	float getSc() const ;
 	void setSc (float v) ;
 
+	void setClouds (float v);
+	float getClouds() const;
+	
 private:
 	RenderState();
 	~RenderState();
@@ -247,5 +250,7 @@ private:
 
 	Node *m_skybox;
 	float m_sc ;
+
+	float m_cloudsOffset;
 	
 };

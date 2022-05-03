@@ -523,6 +523,7 @@ void animate(int value) {
 			inc_t= 0.001;
 		}
 		t=t+inc_t;
+		RenderState:: instance()->setClouds(t);
 		RenderState:: instance()->setSc(t);
 		glutPostRedisplay();
 	}
