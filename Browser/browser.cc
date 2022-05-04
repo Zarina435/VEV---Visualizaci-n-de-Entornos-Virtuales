@@ -516,13 +516,15 @@ void animate(int value) {
 	// ##### REPLACE WITH YOUR OWN GAME/APP MAIN CODE HERE #####
 	if (runAnimation) {
 		// Force a redisplay to render the new image
-		if(t>1.0){
+		/*if(t>1.0){
 			inc_t= -0.001;
 		}
 		if(t<0){
 			inc_t= 0.001;
-		}
-		t=t+inc_t;
+		}*/
+
+		//t=t+inc_t;
+		t=t+0.001;
 		RenderState:: instance()->setClouds(t);
 		RenderState:: instance()->setSc(t);
 		glutPostRedisplay();

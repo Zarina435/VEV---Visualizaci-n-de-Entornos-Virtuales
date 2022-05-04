@@ -14,7 +14,7 @@ void main() {
 	// textures with a factor of 0.5, e.g:
 	//
 	vec4 texColor0 = texture2D(texture0, f_texCoord);
-	vec4 texColor1 = texture2D(texture1, f_texCoord);
+	vec4 texColor1 = texture2D(texture1, f_texCoord+vec2(uCloudOffset, 0.0));
 	vec4 color= 0.5 * texColor0 + 0.5 * texColor1;
 
 	gl_FragColor = color;

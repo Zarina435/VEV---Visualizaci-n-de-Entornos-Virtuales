@@ -206,6 +206,7 @@ void ShaderProgram::beforeDraw() {
 	if (this->has_capability("sc")){
 		this->send_uniform("sc", rs->getSc());
 	}
+	
 	this->send_uniform("modelToCameraMatrix", rs->top(RenderState::modelview));
 	this->send_uniform("modelToWorldMatrix", rs->top(RenderState::model));
 	this->send_uniform("cameraToClipMatrix", rs->top(RenderState::projection));
@@ -244,7 +245,6 @@ void ShaderProgram::beforeDraw() {
 		++i;
 	}
 	this->send_uniform("active_lights_n", i);
-
 	mat = rs->getFrontMaterial();
 	if (mat != 0) {
 		this->send_uniform("theMaterial.diffuse", mat->getDiffuse());
@@ -262,6 +262,7 @@ void ShaderProgram::beforeDraw() {
 				if (tex2 != 0) {
 					tex2->bindGLUnit(Constants::gl_texunits::rest);
 					this->send_uniform("texture1", Constants::gl_texunits::rest); // Texture unit 2
+					this->send_uniform("uCloudOffset", rs->getClouds());
 				}
 			}
 		}
