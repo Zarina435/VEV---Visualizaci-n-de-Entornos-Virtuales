@@ -146,7 +146,7 @@ void main() {
 	texColor = texture2D(texture0, f_texCoord);
 
 	vec4 vColor=vec4(0.0,0.0,0.0,1.0);
-	//vColor.rgb=scene_ambient*texColor.rgb+ acumulador_difuso*texColor.rgb+ acumulador_especular;
+	vColor.rgb=scene_ambient*texColor.rgb+ acumulador_difuso*texColor.rgb+ acumulador_especular;
 	//vColor.rgb= acumulador_especular;
 	
 	
