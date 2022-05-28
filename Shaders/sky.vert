@@ -12,4 +12,7 @@ varying vec3 f_texCoord; // Note: texture coordinates is vec3
 void main() {
 
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
+
+	//Cambiar signo de coordenada Z.
+	f_texCoord = vec3(v_position.xy,-1.0*v_position.z);
 }

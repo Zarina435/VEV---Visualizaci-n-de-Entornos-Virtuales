@@ -63,7 +63,18 @@ void CreateSkybox(GObject *gobj,
 		exit(1);
 	}
 	/* =================== PUT YOUR CODE HERE ====================== */
+	//Creamos el material del cielo y le añadimos textura. Se la añadimos al cubo.
+	Material *matCielo = MaterialManager::instance()->create("skymat");
+	matCielo->setTexture(ctex);
+	gobj->setMaterial(matCielo);
 
+	//Creamos el nodo, y le asignamos el shader al objeto. Le asignamos objeto al nodo.
+	Node *nodoCielo = NodeManager::instance()->create("skynode");
+	nodoCielo->attachShader(skyshader);
+	nodoCielo->attachGobject(gobj);
+
+	//Guardamos el nodo en el render state.
+	RenderState::instance()->setSkybox(nodoCielo);
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
@@ -104,6 +115,29 @@ void DisplaySky(Camera *cam) {
 	if (!skynode) return;
 
 	/* =================== PUT YOUR CODE HERE ====================== */
+	
+	//Guardar el shader actual.
+	ShaderProgram *shader = rs->getShader();
 
+	//Llevamos el cubo al origen del sistema de referencia de la cámara.
+	Trfm3D trfmCam;
+	Vector3 posCam=cam->getPosition();
+	trfmCam.setTrans(posCam);
+	rs->push(RenderState::modelview);
+	rs->addTrfm(RenderState::modelview,&trfmCam);
+
+	//Deshabilitamos el z-buffer
+	glDisable(GL_DEPTH_TEST); 
+
+	//Dibuja el objeto geométrico.
+	rs->setShader(skynode->getShader());
+	skynode->getGobject()->draw();
+	rs->pop(RenderState::modelview);
+
+	//Volvemos a habilitar el z-buffer.
+	glEnable(GL_DEPTH_TEST);
+
+	//Ponemos el shader anterior.
+	rs->setShader(shader);
 	/* =================== END YOUR CODE HERE ====================== */
 }

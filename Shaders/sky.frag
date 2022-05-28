@@ -8,5 +8,9 @@ uniform samplerCube cubemap;
 // vec4 textureCube(samplerCube sampler, vec3 coord);
 
 void main() {
-	gl_FragColor = vec4(1.0);
+
+	//Calcular el color del píxel a partir de la textura y las coordenadas.
+	vec4 texColor = textureCube(cubemap, f_texCoord);
+
+	gl_FragColor = texColor;
 }
