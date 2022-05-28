@@ -21,4 +21,25 @@ varying vec3 f_normalw;   // world space
 
 void main() {
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
+
+	//Igual que perfragment.vert
+	vec4 f_position4= (modelToCameraMatrix * vec4(v_position,1));
+	vec4 f_viewDirection4 = (0,0,0,1)-f_position4;
+	vec4 f_normal4= (modelToCameraMatrix * vec4(v_normal,0));
+	
+	f_position = f_position4.xyz;
+	f_viewDirection = f_viewDirection4.xyz;
+	f_normal = f_normal4.xyz;
+
+	f_texCoord= v_texCoord;
+
+	//Nuevas variables
+
+	//Posicion del vertice en el sistema de coordenadas del mundo
+	vec4 f_positionw4= (modelToWorldMatrix * vec4(v_position,1));
+	f_positionw = f_positionw4.xyz;
+
+	//Normal del vertice en el sistema de coordenadas del mundo
+	vec4 f_normalw4= (modelToWorldMatrix * vec4(v_normal,0));
+	f_normalw = f_normalw4.xyz; 
 }

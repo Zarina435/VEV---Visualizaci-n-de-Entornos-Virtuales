@@ -284,6 +284,19 @@ void ShaderProgram::beforeDraw() {
 		}
 		
 	}
+	Texture *auxtex = TextureManager::instance()->find("CubeEnv");
+	//Si tiene textura cubeenv
+	if(auxtex != 0){
+		if(this->has_capability("cube_env")){
+				//Asignar la textura.
+				auxtex->bindGLUnit(Constants::gl_texunits::envmap);
+				//Asignar el valor de la unidad de textura a la variable envmap.
+				this->send_uniform("envmap",Constants::gl_texunits::envmap);
+				//Asignar el valor de la posicíon de la cámara a la variable campos.
+				Vector3 posCam= rs->getCamera()->getPosition();
+				this->send_uniform("campos", posCam);
+		}
+	}
 }
 
 void ShaderProgram::print() const {
